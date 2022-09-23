@@ -15,5 +15,6 @@ public interface IBookService {
     public Response deleteBook(String token, Long bookId);
     public Response updateBookPrice(String token, Long bookId, double price);
     public Response updateBookQuantity(String token, Long bookId, Long quantity);
+    public Boolean verifyBook(String token, Long bookId);
 
 }

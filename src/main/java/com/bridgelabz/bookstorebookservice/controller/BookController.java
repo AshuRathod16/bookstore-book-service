@@ -79,4 +79,9 @@ public class BookController {
         Response response = bookService.updateBookQuantity(token, bookId, quantity);
         return new ResponseEntity<Response>(response, HttpStatus.OK);
     }
+
+    @GetMapping("/verifybook/{token}/{bookId}")
+    public Boolean verifyBook(@PathVariable String token,@PathVariable Long bookId) {
+        return bookService.verifyBook(token,bookId);
+    }
 }

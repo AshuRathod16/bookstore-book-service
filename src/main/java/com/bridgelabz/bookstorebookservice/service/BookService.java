@@ -31,7 +31,7 @@ public class BookService implements IBookService {
 
     /**
      * @param token, noteDTO
-     *               Purpose: Creating method to create notes
+     * Purpose: Creating method to create notes
      * @author Ashwini Rathod
      */
 
@@ -51,7 +51,8 @@ public class BookService implements IBookService {
     }
 
     /**
-     * @param token,noteDTO,noteId Purpose: Creating method to update notes
+     * @param token,noteDTO,noteId
+     * Purpose: Creating method to update notes
      * @author Ashwini Rathod
      */
 
@@ -84,14 +85,14 @@ public class BookService implements IBookService {
     }
 
     /**
-     * @param token purpose: Creating Method to get all books
+     * @param token
+     * purpose: Creating Method to get all books
      * @author Ashwini Rathod
      */
 
     @Override
     public List<BookModel> getAllBooks(String token) {
         boolean isUserPresent = restTemplate.getForObject("http://BOOKSTORE-USER-SERVICE:8083/user/verify/" + token, Boolean.class);
-        ;
         if (isUserPresent) {
             Long userId = tokenUtil.decodeToken(token);
             Optional<BookModel> isUserIdPresent = bookRepository.findByUserId(userId);
@@ -107,13 +108,14 @@ public class BookService implements IBookService {
     }
 
     /**
-     * @param token,noteId purpose: Creating method to get book by id
+     * @param token,noteId
+     * purpose: Creating method to get book by id
      * @author Ashwini Rathod
      */
 
     @Override
     public Optional<BookModel> getBookById(Long bookId, String token) {
-        boolean isUserPresent = restTemplate.getForObject("http://FUNDOO-USER:8082/user/validate/" + token, Boolean.class);
+        boolean isUserPresent = restTemplate.getForObject("http://BOOKSTORE-USER-SERVICE:8083/user/verify/" + token, Boolean.class);
         if (isUserPresent) {
             Long userId = tokenUtil.decodeToken(token);
             Optional<BookModel> isUserIdPresent = bookRepository.findByUserId(userId);
@@ -128,9 +130,16 @@ public class BookService implements IBookService {
         throw new BookNotFoundException(400, "Token is invalid");
     }
 
+/**
+ * @param token,noteId
+ * purpose: Creating method to delete book
+ * @author Ashwini Rathod
+ */
+
+
     @Override
     public Response deleteBook(String token, Long bookId) {
-        boolean isUserPresent = restTemplate.getForObject("http://FUNDOO-USER:8082/user/validate/" + token, Boolean.class);
+        boolean isUserPresent = restTemplate.getForObject("http://BOOKSTORE-USER-SERVICE:8083/user/verify/" + token, Boolean.class);
         if (isUserPresent) {
             Long userId = tokenUtil.decodeToken(token);
             Optional<BookModel> isUserIdPresent = bookRepository.findByUserId(userId);
@@ -145,9 +154,15 @@ public class BookService implements IBookService {
         throw new BookNotFoundException(400, "Invalid token");
     }
 
+    /**
+     * @param token,bookId,price
+     * purpose: Creating method to update book price
+     * @author Ashwini Rathod
+     */
+
     @Override
     public Response updateBookPrice(String token, Long bookId, double price) {
-        boolean isUserPresent = restTemplate.getForObject("http://FUNDOO-USER:8082/user/validate/" + token, Boolean.class);
+        boolean isUserPresent = restTemplate.getForObject("http://BOOKSTORE-USER-SERVICE:8083/user/verify/" + token, Boolean.class);
         if (isUserPresent) {
             Long userId = tokenUtil.decodeToken(token);
             Optional<BookModel> isUserIdPresent = bookRepository.findByUserId(userId);
@@ -164,9 +179,15 @@ public class BookService implements IBookService {
         throw new BookNotFoundException(400, "User not Login, Please Check!");
     }
 
+    /**
+     * @param token,bookId,quantity
+     * purpose: Creating method to update book quatity
+     * @author Ashwini Rathod
+     */
+
     @Override
     public Response updateBookQuantity(String token, Long bookId, Long quantity) {
-        boolean isUserPresent = restTemplate.getForObject("http://FUNDOO-USER:8082/user/validate/" + token, Boolean.class);
+        boolean isUserPresent = restTemplate.getForObject("http://BOOKSTORE-USER-SERVICE:8083/user/verify/" + token, Boolean.class);
         if (isUserPresent) {
             Long userId = tokenUtil.decodeToken(token);
             Optional<BookModel> isUserIdPresent = bookRepository.findByUserId(userId);
@@ -181,5 +202,30 @@ public class BookService implements IBookService {
             throw new BookNotFoundException(400, "Book not Present");
         }
         throw new BookNotFoundException(400, "User not Login, Please Check!");
+    }
+
+    /**
+     * @param token,bookId
+     * purpose: Creating method to verify book
+     * @author Ashwini Rathod
+     */
+
+    @Override
+    public Boolean verifyBook(String token, Long bookId) {
+        boolean isUserPresent = restTemplate.getForObject("http://BOOKSTORE-USER-SERVICE:8083/user/verify/" + token, Boolean.class);
+        if (isUserPresent) {
+            Long userId = tokenUtil.decodeToken(token);
+            Optional<BookModel> isUserIdPresent = bookRepository.findByUserId(userId);
+            if (isUserIdPresent.isPresent()) {
+                Optional<BookModel> isBookPresent = bookRepository.findById(bookId);
+                if (isBookPresent != null) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+        }
+        return isUserPresent;
     }
 }
